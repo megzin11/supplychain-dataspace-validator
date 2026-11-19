@@ -1,0 +1,70 @@
+{
+  "@context": {
+    "odrl": "http://www.w3.org/ns/odrl/2/",
+    "dqv": "http://www.w3.org/ns/dqv#",
+    "canonical": "urn:dataspace:supplychain:cdm:"
+  },
+  "contract_id": "urn:dataspace:supplychain:governance:v1",
+  "policies": [
+    {
+      "uid": "policy:completeness-shipment-id",
+      "name": "Mandatory Shipment Identifier Completeness",
+      "dqv_dimension": "Completeness",
+      "description": "At least 99.0% of records must carry a non-null shipment identifier.",
+      "target_features": ["canonical:Shipment.id"],
+      "validator": "min_completeness",
+      "params": {
+        "min_ratio": 0.99
+      }
+    },
+    {
+      "uid": "policy:compliance-dest-iso",
+      "name": "ISO 3166-1 Alpha-2 Destination Compliance",
+      "dqv_dimension": "Compliance",
+      "description": "100% of destination country codes must conform to approved ISO 3166-1 alpha-2 codes.",
+      "target_features": ["canonical:Shipment.destinationCountry"],
+      "validator": "allowed_iso_codes",
+      "params": {
+        "allowed_values": ["BE", "DE", "EG", "ES", "FI", "FR", "GB", "IT", "NL", "SE", "US"]
+      }
+    },
+    {
+      "uid": "policy:accuracy-gross-weight",
+      "name": "Physical Container Weight Bounds (Canonical KG)",
+      "dqv_dimension": "Accuracy",
+      "description": "Normalized gross weight must be strictly positive and not exceed the 30,000 kg container limit.",
+      "target_features": ["canonical:Shipment.grossWeightKg"],
+      "validator": "numeric_range",
+      "params": {
+        "min_exclusive": 0.0,
+        "max_inclusive": 30000.0
+      }
+    },
+    {
+      "uid": "policy:currentness-sync-freshness",
+      "name": "Telemetry Sync Freshness SLA",
+      "dqv_dimension": "Currentness",
+      "description": "All exported shipment records must have been synchronized within the last 24 hours.",
+      "target_features": ["canonical:Shipment.lastUpdatedUtc"],
+      "validator": "max_age_hours",
+      "params": {
+        "max_hours": 24.0
+      }
+    },
+    {
+      "uid": "policy:consistency-delivery-timeline",
+      "name": "Cross-Column Delivery Chronology & Status Integrity",
+      "dqv_dimension": "Consistency",
+      "description": "Delivery timestamp cannot precede dispatch timestamp, and DELIVERED shipments cannot lack a delivery timestamp.",
+      "target_features": [
+        "canonical:Shipment.dispatchTimestamp",
+        "canonical:Shipment.deliveryTimestamp",
+        "canonical:Shipment.status"
+      ],
+      "validator": "delivery_temporal_consistency",
+      "params": {
+        "delivered_label": "DELIVERED"
+      }
+    }
+  ]
+}

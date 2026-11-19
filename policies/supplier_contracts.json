@@ -1,0 +1,100 @@
+{
+  "consumers": [
+    {
+      "id": "consumer:erp-analytics-bi",
+      "name": "Enterprise ERP & BI Warehouse",
+      "criticality": "HIGH"
+    },
+    {
+      "id": "consumer:customs-compliance",
+      "name": "EU Customs Compliance Gateway",
+      "criticality": "CRITICAL"
+    }
+  ],
+  "data_products": [
+    {
+      "id": "product:supplier-a-shipments",
+      "name": "Supplier A — European Logistics Feed",
+      "supplier": "Supplier A",
+      "file_path": "data/supplier_a_shipments.csv",
+      "contract_id": "contract:supplier-a:v1",
+      "consumers": ["consumer:erp-analytics-bi"],
+      "mappings": [
+        {
+          "local_column": "ship_id",
+          "canonical_feature": "canonical:Shipment.id"
+        },
+        {
+          "local_column": "dest_iso",
+          "canonical_feature": "canonical:Shipment.destinationCountry"
+        },
+        {
+          "local_column": "gross_wt_kg",
+          "canonical_feature": "canonical:Shipment.grossWeightKg",
+          "unit_factor": 1.0
+        },
+        {
+          "local_column": "dispatch_utc",
+          "canonical_feature": "canonical:Shipment.dispatchTimestamp",
+          "date_format": "%Y-%m-%dT%H:%M:%SZ"
+        },
+        {
+          "local_column": "delivery_utc",
+          "canonical_feature": "canonical:Shipment.deliveryTimestamp",
+          "date_format": "%Y-%m-%dT%H:%M:%SZ"
+        },
+        {
+          "local_column": "ship_status",
+          "canonical_feature": "canonical:Shipment.status"
+        },
+        {
+          "local_column": "updated_utc",
+          "canonical_feature": "canonical:Shipment.lastUpdatedUtc",
+          "date_format": "%Y-%m-%dT%H:%M:%SZ"
+        }
+      ]
+    },
+    {
+      "id": "product:supplier-b-shipments",
+      "name": "Supplier B — Transatlantic Carrier Feed",
+      "supplier": "Supplier B",
+      "file_path": "data/supplier_b_shipments.csv",
+      "contract_id": "contract:supplier-b:v1",
+      "consumers": ["consumer:erp-analytics-bi", "consumer:customs-compliance"],
+      "mappings": [
+        {
+          "local_column": "tracking_no",
+          "canonical_feature": "canonical:Shipment.id"
+        },
+        {
+          "local_column": "country_code",
+          "canonical_feature": "canonical:Shipment.destinationCountry"
+        },
+        {
+          "local_column": "weight_lbs",
+          "canonical_feature": "canonical:Shipment.grossWeightKg",
+          "unit_factor": 0.45359237
+        },
+        {
+          "local_column": "sent_date",
+          "canonical_feature": "canonical:Shipment.dispatchTimestamp",
+          "date_format": "%d/%m/%Y %H:%M"
+        },
+        {
+          "local_column": "arrived_date",
+          "canonical_feature": "canonical:Shipment.deliveryTimestamp",
+          "date_format": "%d/%m/%Y %H:%M"
+        },
+        {
+          "local_column": "state_code",
+          "canonical_feature": "canonical:Shipment.status"
+        },
+        {
+          "local_column": "last_sync",
+          "canonical_feature": "canonical:Shipment.lastUpdatedUtc",
+          "date_format": "%d/%m/%Y %H:%M"
+        }
+      ]
+    }
+  ]
+}
